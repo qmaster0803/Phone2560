@@ -2,7 +2,7 @@ CONTROLLER_MODEL = atmega2560
 
 .PHONY: all clean rebuild flash
 
-all: build/main.o build/Display.o build/SIM_A6.o build/SD.o
+all: build/main.o build/Display.o build/SIM_A6.o build/SD.o build/pff.o build/diskio.o
 	@echo "[LINK] all"
 	@avr-g++ -mmcu=$(CONTROLLER_MODEL) -o build/main.elf build/*.o
 	@#avr-objdump -h build/main.elf
@@ -27,6 +27,16 @@ build/SD.o:
 	@mkdir -p build/
 	@echo "[ CC ] SD.cc"
 	@avr-g++ -std=c++17 -Os -mmcu=$(CONTROLLER_MODEL) -c SD.cc -o build/SD.o
+
+build/pff.o:
+	@mkdir -p build/
+	@echo "[ CC ] pff.c"
+	@avr-g++ -std=c++17 -Os -mmcu=$(CONTROLLER_MODEL) -c PFFS/pff.cc -o build/pff.o
+
+build/diskio.o:
+	@mkdir -p build/
+	@echo "[ CC ] diskio.c"
+	@avr-g++ -std=c++17 -Os -mmcu=$(CONTROLLER_MODEL) -c PFFS/diskio.cc -o build/diskio.o
 
 clean:
 	@echo "Cleaning..."
