@@ -17,7 +17,24 @@ void SIM_A6::init()
 	UCSR3C = (1<<1)|(1<<2);        //8-bit character size
 }
 
-void SIM_A6::newDataGot(uint8_t)
+void SIM_A6::newDataGot()
 {
+	uint8_t got_data = UDR3;
+	if(got_data == 0x0D || got_data == 0x0A) {return;}
+	_rxBuffer[_rxBufferLength] = got_data;
 	_rxBufferLength++;
+}
+
+void SIM_A6::getBufStr(char *data, uint8_t *bufLen)
+{
+	*bufLen = _rxBufferLength;
+	*data = (char)_rxBuffer[_rxBufferLength-1];
+}
+
+void SIM_A6::send_AT()
+{
+	_writeUART((uint8_t)'A');
+	_writeUART((uint8_t)'T');
+	_writeUART(0x0D);
+	_writeUART(0x0A);
 }

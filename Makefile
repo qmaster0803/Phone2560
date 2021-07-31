@@ -2,10 +2,10 @@ CONTROLLER_MODEL = atmega2560
 
 .PHONY: all clean rebuild flash
 
-all: build/main.o build/Display.o build/SIM_A6.o build/SD.o build/pff.o build/diskio.o
+all: build/main.o build/Display.o build/SIM_A6.o build/pff.o build/diskio.o build/TTP229.o
 	@echo "[LINK] all"
 	@avr-g++ -mmcu=$(CONTROLLER_MODEL) -o build/main.elf build/*.o
-	@#avr-objdump -h build/main.elf
+	@avr-size -C --mcu=$(CONTROLLER_MODEL) build/main.elf
 	@avr-objcopy -R .eeprom -O ihex build/main.elf build/main.hex
 
 build/main.o:
@@ -23,11 +23,6 @@ build/SIM_A6.o:
 	@echo "[ CC ] SIM_A6.cc"
 	@avr-g++ -std=c++17 -Os -mmcu=$(CONTROLLER_MODEL) -c SIM_A6.cc -o build/SIM_A6.o
 
-build/SD.o:
-	@mkdir -p build/
-	@echo "[ CC ] SD.cc"
-	@avr-g++ -std=c++17 -Os -mmcu=$(CONTROLLER_MODEL) -c SD.cc -o build/SD.o
-
 build/pff.o:
 	@mkdir -p build/
 	@echo "[ CC ] pff.c"
@@ -37,6 +32,11 @@ build/diskio.o:
 	@mkdir -p build/
 	@echo "[ CC ] diskio.c"
 	@avr-g++ -std=c++17 -Os -mmcu=$(CONTROLLER_MODEL) -c PFFS/diskio.cc -o build/diskio.o
+
+build/TTP229.o:
+	@mkdir -p build/
+	@echo "[ CC ] diskio.c"
+	@avr-g++ -std=c++17 -Os -mmcu=$(CONTROLLER_MODEL) -c TTP229.cc -o build/TTP229.o
 
 clean:
 	@echo "Cleaning..."
